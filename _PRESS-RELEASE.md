@@ -18,36 +18,45 @@ Once the project moves into development, the press release can be used as a touc
 
 ## Heading ##
   > Name the product in a way the reader (i.e. your target customers) will understand.
+
   Sifter.
 
 ## Sub-Heading ##
   > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
-  Sort your waste with sifter.
+
+  With Sifter, sorting your waste has never been easier.
 
 ## Summary ##
   > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
-  Sifter is an app that automatically determines where to place your waste (Compost, Recycling, or Landfill).
+
+  Sifter is an app that automagically determines where to place your waste (Compost, Recycling, or Landfill).
 
 ## Problem ##
   > Describe the problem your product solves.
+
   Many people encounter difficulties with where the waste should go.
 
 ## Solution ##
   > Describe how your product elegantly solves the problem.
+
   Sifter takes care of the decision making for you.
 
 ## Quote from You ##
   > A quote from a spokesperson in your company.
-  I feel better about my existence knowing where to put my waste.
+
+  I feel better about my existence knowing that Sifter exists. It seems like such a no-brainer, I can't believe no one thought to do it before!
 
 ## How to Get Started ##
   > Describe how easy it is to get started.
-  Hook up your raspberry pi to a trashcan, download our code, and scan your item.
+
+  Use your phone's camera or your raspberry pi to scan your items and Sifter will tell you where to toss it. It's that easy!
 
 ## Customer Quote ##
   > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
-  Sifter helped me reduce waste by 200%! Best app ever!
+
+  Sifter helped me reduce waste by 250%! Best app ever!
 
 ## Closing and Call to Action ##
   > Wrap it up and give pointers where the reader should go next.
-  Visit [website] to see how to get started.
+
+  Not convinced? Visit [website] and try Sifter out for yourself! The world will thank you.

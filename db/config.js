@@ -10,7 +10,11 @@ var sequelize = new Sequelize('sifter', 'root', '', {
 });
 
 var Item = sequelize.define('item', {
-  id: Sequelize.UUIDV1,
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   category: Sequelize.STRING,
   description: Sequelize.STRING,
   url: Sequelize.STRING,

@@ -3,6 +3,9 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 //POST requests going to 'https://camfind.p.mashape.com/image_requests'
   //Input: image_request[remote_image_url], image_request[locale]
   //Output: { 'token': [the token for the image] } JSON format
@@ -18,15 +21,12 @@ var app = express();
 //   - get
 //   - post
 
+app.post('/api/imgurl', function(req, res){
+  res.set(header)
+  res.send('image_request[locale]', req.body.locale)
+  res.send('image_request[remote_image_url]', req.body.imgurl)
 
-// var header = { //need to fix these later
-//   'X-Mashape-Key': '6qRcLmRhtpmshHUnKZhr35Tkpf4Ep18I4HbjsndLZjL7cUMrwt',
-//   'Content-Type': 'application/x-www-form-urlencoded',
-//   'Accept': 'application/json'
-// }
+  //res something return the token
+  res.end(get the data)
 
-// app.post('/api/imgurl', function(req, res){
-//   res.set(header)
-//   res.send('image_request[locale]', req.body.locale)
-//   res.send('image_request[remote_image_url]', req.body.imgurl)
-// });
+});

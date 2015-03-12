@@ -1,0 +1,31 @@
+{
+  "name": "Sifter",
+  "version": "0.0.1",
+  "description": "Sift your trash",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hilarious-pancake/hilarious-pancake.git"
+  },
+  "keywords": [
+    "trash",
+    "landfill",
+    "compost",
+    "sift",
+    "recycle",
+    "sifter"
+  ],
+  "author": "Hilarious Pancake",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hilarious-pancake/hilarious-pancake/issues"
+  },
+  "homepage": "https://github.com/hilarious-pancake/hilarious-pancake",
+  "dependencies": {
+    "body-parser": "^1.12.0",
+    "express": "^4.12.2"
+  }
+}

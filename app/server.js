@@ -29,18 +29,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.post('/api/imgurl', function(req, res){
   //should get locale and image url
     //which will be passed into the post request
-  })
-  .then(function(err, data){
-    httpR.postAsync({
+    return httpR.postAsync({
+      headers: header,
       url: 'https://camfind.p.mashape.com/image_requests',
-      headers: header
+      'image_request[locale]': req.body.locale,
+      'image_request[remote_image_url]': req.body.imgurl
     })
-  })
   .then(function(err, data){
     //send the location and url to the server and set the data
     // data = response-data
-    return httpR.getAsync('https://camfind.p.mashape.com/image_responses/' + data)
+    return httpR.getAsync({
+      url: 'https://camfind.p.mashape.com/image_responses/' + data
+      res.end(blackBox(data.name))
+    })
   })
+  .catch(function(e){
+    console.error('Your image is too blurry');
+  })
+
+})
 
 
 var blackBox = function(string){
@@ -51,13 +58,8 @@ var blackBox = function(string){
   //should add to the classifier training document
     //insert into the schema table
 
-  //should return the trash, compost, or recycle
+  //should return the trash, compost, or recycle and then sent back to the client
   return classifier.classify(string);
 }
 
-
-
-
-res.set(header);
-res.send('image_request[locale]', req.body.locale);
-res.send('image_request[remote_image_url]', req.body.imgurl);
+app.listen(8080);

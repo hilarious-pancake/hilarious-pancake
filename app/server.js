@@ -24,11 +24,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
     //1) Success path { 'status': 'completed', 'name': [the description of the image] }
     //2) Error path { 'status': 'skipped' , 'reason': 'blurry'}
 
+
+
 app.post('/api/imgurl', function(req, res){
   //should get locale and image url
     //which will be passed into the post request
-  }).then(function(err, data){
-    httpR.postAsync('https://camfind.p.mashape.com/image_requests')
+  })
+  .then(function(err, data){
+    httpR.postAsync({
+      url: 'https://camfind.p.mashape.com/image_requests',
+      headers: header
+    })
   })
   .then(function(err, data){
     //send the location and url to the server and set the data
@@ -43,6 +49,7 @@ var blackBox = function(string){
   //the response data will come in a string
 
   //should add to the classifier training document
+    //insert into the schema table
 
   //should return the trash, compost, or recycle
   return classifier.classify(string);

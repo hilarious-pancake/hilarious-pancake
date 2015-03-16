@@ -4,6 +4,8 @@ var Promise = require('bluebird').Promise;
 var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 
+var io = require('socket.io');
+
 var app = express();
 
 classifier = new natural.BayesClassifier();
@@ -24,25 +26,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
     //1) Success path { 'status': 'completed', 'name': [the description of the image] }
     //2) Error path { 'status': 'skipped' , 'reason': 'blurry'}
 
-
-
-app.post('/api/imgurl', function(req, res){
-  //should get locale and image url
-    //which will be passed into the post request
-  })
-  .then(function(err, data){
-    httpR.postAsync({
-      url: 'https://camfind.p.mashape.com/image_requests',
-      headers: header
-    })
-  })
-  .then(function(err, data){
-    //send the location and url to the server and set the data
-    // data = response-data
-    return httpR.getAsync('https://camfind.p.mashape.com/image_responses/' + data)
-  })
-
-
 var blackBox = function(string){
   //do nlp processing
 
@@ -51,13 +34,62 @@ var blackBox = function(string){
   //should add to the classifier training document
     //insert into the schema table
 
-  //should return the trash, compost, or recycle
+  //should return the trash, compost, or recycle and then sent back to the client
   return classifier.classify(string);
 }
 
+app.post('/api/imgurl', function(req, res){
+  //should get locale and image url
+    //which will be passed into the post request
+    return httpR.postAsync({
+      headers: header,
+      url: 'https://camfind.p.mashape.com/image_requests',
+      'image_request[locale]': req.body.locale,
+      'image_request[remote_image_url]': req.body.imgurl
+    })
+  .then(function(err, data){
+    //send the location and url to the server and set the data
+    // data = response-data
+    return httpR.getAsync({
+      url: 'https://camfind.p.mashape.com/image_responses/' + data
+    })
+  })
+  .then(function(err, data){
+    if(data.status === 'skipped'){
+      throw error;
+    }
+  })
+  // .catch(function(e){ //if(data.status === 'skipped') execute error path
+  //   if(e.status === 'skipped'){
+  //     console.error('Your image is too blurry');
+  //   }
+  // })
+  .then(function(err, data){
+    //pass the definition to the blackbox
+    return blackBox(data.name);
+  })
+
+})
+
+///////////////
+// SOCKET IO //
+///////////////
+
+// Set up socket connection
+
+io.sockets.on('connection', function(socket){
+  console.log('Connected!');
+
+  socket.emit('emitFromServer', blackBox(data))
+})
+
+// On the client side
+//  - socket IO will need to catch the emitted data
+// ex:
+// socket.on('emitFromServer', function(serverData){
+//   console.log(serverData)
+// })
 
 
 
-res.set(header);
-res.send('image_request[locale]', req.body.locale);
-res.send('image_request[remote_image_url]', req.body.imgurl);
+app.listen(8080);

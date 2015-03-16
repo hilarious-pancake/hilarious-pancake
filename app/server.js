@@ -4,6 +4,8 @@ var Promise = require('bluebird').Promise;
 var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 
+var io = require('socket.io');
+
 var app = express();
 
 classifier = new natural.BayesClassifier();
@@ -57,16 +59,37 @@ app.post('/api/imgurl', function(req, res){
       throw error;
     }
   })
-  .catch(function(e){ //if(data.status === 'skipped') execute error path
-    if(e.status === 'skipped'){
-      console.error('Your image is too blurry');
-    }
-  })
+  // .catch(function(e){ //if(data.status === 'skipped') execute error path
+  //   if(e.status === 'skipped'){
+  //     console.error('Your image is too blurry');
+  //   }
+  // })
   .then(function(err, data){
     //pass the definition to the blackbox
     return blackBox(data.name);
   })
 
 })
+
+///////////////
+// SOCKET IO //
+///////////////
+
+// Set up socket connection
+
+io.sockets.on('connection', function(socket){
+  console.log('Connected!');
+
+  socket.emit('emitFromServer', blackBox(data))
+})
+
+// On the client side
+//  - socket IO will need to catch the emitted data
+// ex:
+// socket.on('emitFromServer', function(serverData){
+//   console.log(serverData)
+// })
+
+
 
 app.listen(8080);

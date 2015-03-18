@@ -1,10 +1,10 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var Promise = require('bluebird').Promise;
-var httpR = Promise.promisifyAll(require('http-request'));
+// var Promise = require('bluebird').Promise;
+// var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 var unirest = require('unirest');
-var db = require('../db/config');
+var db = require('./db/config');
 
 var app = express();
 
@@ -22,7 +22,7 @@ var blackBox = function(description, imgUrl){
   //should return the trash, compost, or recycle and then sent back to the client
   var classification;
 
-  natural.BayesClassifier.load('classifier.json', null, function(err, classifier) {
+  natural.BayesClassifier.load('./app/classifier.json', null, function(err, classifier) {
     classification = classifier.classify(description);
 
     db.sync().then(function() {
@@ -41,7 +41,7 @@ var blackBox = function(description, imgUrl){
 
 app.get('/api/test', function(req, res){
   res.send(200, 'SUCCESS!');
-})
+});
 
 app.post('/api/imgurl', function(req, res){
   console.log('DATA FROM CLIENT: ', req.body);
@@ -67,7 +67,7 @@ app.post('/api/imgurl', function(req, res){
             res.send(200, blackBox(result.body.name, req.body.imgurl));
         });
     });
-})
+});
 
 // TODO:
 // - Send the classification to the client

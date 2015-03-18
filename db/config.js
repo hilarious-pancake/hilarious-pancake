@@ -1,7 +1,33 @@
+// ////////
+// // PG //
+// ////////
+
+// var pg = require('pg');
+
+// pg.connect(process.env.DATABASE_URL, function(err, client){
+
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////
+// SEQUELIZE //
+///////////////
+
 var Sequelize = require('sequelize');
 
 var sequelize = new Sequelize('sifter', 'root', '', {
-  host: '127.0.0.1',
+  host: process.env.DATABASE_URL,
   dialect: 'postgres',
 
   pool: {
@@ -26,6 +52,5 @@ var Item = sequelize.define('item', {
   },
   timestamps: true
 });
-
 
 sequelize.sync();

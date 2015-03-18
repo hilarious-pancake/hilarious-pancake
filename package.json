@@ -1,6 +1,9 @@
 {
   "name": "Sifter",
   "version": "0.0.1",
+  "engines": {
+    "node": "0.12.x"
+  },
   "description": "Sift your trash",
   "main": "server.js",
   "scripts": {

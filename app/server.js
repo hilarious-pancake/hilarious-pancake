@@ -4,24 +4,35 @@ var Promise = require('bluebird').Promise;
 var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 var unirest = require('unirest');
+var db = require('../db/config');
 
 var app = express();
 
-classifier = new natural.BayesClassifier();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-var blackBox = function(string){
+var blackBox = function(description, imgUrl){
   //do nlp processing
-
   //the response data will come in a string
 
   //should add to the classifier training document
     //insert into the schema table
 
   //should return the trash, compost, or recycle and then sent back to the client
-  return classifier.classify(string);
+  var classification;
+
+  natural.BayesClassifier.load('classifier.json', null, function(err, classifier) {
+    classification = classifier.classify(description);
+
+    db.sync().then(function() {
+      return Item.create({
+        category: classification,
+        description: description,
+        url: imgUrl
+      });
+    });
+  });
 }
 
 /////////////
@@ -49,7 +60,7 @@ app.post('/api/imgurl', function(req, res){
             if(result.body.status === 'skipped'){ //BASED ON THE API: if there is a status skipped then that means there's an error
               console.log('ERROR!')
             }
-            blackBox(result.body.name)
+            blackBox(result.body.name, req.body.imgurl)
         });
     });
 })

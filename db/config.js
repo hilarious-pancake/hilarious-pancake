@@ -1,5 +1,7 @@
+var Sequelize = require('sequelize');
+
 var sequelize = new Sequelize('sifter', 'root', '', {
-  host: 'localhost',
+  host: '127.0.0.1',
   dialect: 'postgres',
 
   pool: {
@@ -18,7 +20,10 @@ var Item = sequelize.define('item', {
   category: Sequelize.STRING,
   description: Sequelize.STRING,
   url: Sequelize.STRING,
-  date: Sequelize.DATE,
+  date: {
+    type: Sequelize.DATE,
+    defaultValue: Sequelize.NOW
+  },
   timestamps: true
 });
 

@@ -41,7 +41,7 @@ var blackBox = function(description, imgUrl){
 
 app.get('/api/test', function(req, res){
   res.send(200, 'SUCCESS!');
-})
+});
 
 app.post('/api/imgurl', function(req, res){
   console.log('DATA FROM CLIENT: ', req.body);
@@ -67,7 +67,7 @@ app.post('/api/imgurl', function(req, res){
             res.send(200, blackBox(result.body.name, req.body.imgurl));
         });
     });
-})
+});
 
 // TODO:
 // - Send the classification to the client

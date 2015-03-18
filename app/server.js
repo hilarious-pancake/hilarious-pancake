@@ -1,16 +1,15 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var Promise = require('bluebird').Promise;
-var httpR = Promise.promisifyAll(require('http-request'));
+// var Promise = require('bluebird').Promise;
+// var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 var unirest = require('unirest');
-var db = require('../db/config');
+var db = require('../models');
 
 var app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
 
 var blackBox = function(description, imgUrl){
   //do nlp processing
@@ -25,7 +24,7 @@ var blackBox = function(description, imgUrl){
   natural.BayesClassifier.load('classifier.json', null, function(err, classifier) {
     classification = classifier.classify(description);
 
-    db.sync().then(function() {
+    db.sequelize.sync().then(function() {
       return Item.create({
         category: classification,
         description: description,
@@ -72,7 +71,10 @@ app.post('/api/imgurl', function(req, res){
 // TODO:
 // - Send the classification to the client
 
-app.listen(process.env.port || 8080);
+db.sequelize.sync().then(function() {
+  app.listen(process.env.port || 8080);
+});
+
 
 ///////////
 // NOTES //

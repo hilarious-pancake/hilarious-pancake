@@ -1,7 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var Promise = require('bluebird').Promise;
-var httpR = Promise.promisifyAll(require('http-request'));
+// var Promise = require('bluebird').Promise;
+// var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 var unirest = require('unirest');
 var db = require('./db/config');

@@ -32,7 +32,7 @@ app.post('/api/imgurl', function(req, res){
   console.log('DATA FROM CLIENT: ', req.body);
 
   unirest.post("https://camfind.p.mashape.com/image_requests") //POST request sends image url & location to get a token
-    .header("X-Mashape-Key", '6qRcLmRhtpmshHUnKZhr35Tkpf4Ep18I4HbjsndLZjL7cUMrwt')
+    .header("X-Mashape-Key", key)
     .header("Content-Type", "application/x-www-form-urlencoded")
     .header("Accept", "application/json")
     .send({
@@ -42,7 +42,7 @@ app.post('/api/imgurl', function(req, res){
     .end(function (result) { //GET request for the token is passed and a description is returned
       console.log('THE RESULT: ', result.body)
       unirest.get("https://camfind.p.mashape.com/image_responses/" + result.body.token)
-        .header("X-Mashape-Key", "6qRcLmRhtpmshHUnKZhr35Tkpf4Ep18I4HbjsndLZjL7cUMrwt")
+        .header("X-Mashape-Key", key)
         .header("Accept", "application/json")
         .end(function (result) { //BLACKBOX is called on the resulting description
           console.log('THE DESCRIPTION: ', result.body);

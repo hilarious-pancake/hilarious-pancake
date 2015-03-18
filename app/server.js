@@ -39,11 +39,15 @@ var blackBox = function(description, imgUrl){
 // UNIREST //
 /////////////
 
+app.get('/api/test', function(req, res){
+  res.send(200, 'SUCCESS!');
+})
+
 app.post('/api/imgurl', function(req, res){
   console.log('DATA FROM CLIENT: ', req.body);
 
   unirest.post("https://camfind.p.mashape.com/image_requests") //POST request sends image url & location to get a token
-    .header("X-Mashape-Key", key)
+    .header("X-Mashape-Key", process.env.CAMFIND_KEY)
     .header("Content-Type", "application/x-www-form-urlencoded")
     .header("Accept", "application/json")
     .send({
@@ -53,14 +57,14 @@ app.post('/api/imgurl', function(req, res){
     .end(function (result) { //GET request for the token is passed and a description is returned
       console.log('THE RESULT: ', result.body)
       unirest.get("https://camfind.p.mashape.com/image_responses/" + result.body.token)
-        .header("X-Mashape-Key", key)
+        .header("X-Mashape-Key", process.env.CAMFIND_KEY)
         .header("Accept", "application/json")
         .end(function (result) { //BLACKBOX is called on the resulting description
           console.log('THE DESCRIPTION: ', result.body);
             if(result.body.status === 'skipped'){ //BASED ON THE API: if there is a status skipped then that means there's an error
               console.log('ERROR!')
             }
-            blackBox(result.body.name, req.body.imgurl)
+            res.send(200, blackBox(result.body.name, req.body.imgurl));
         });
     });
 })

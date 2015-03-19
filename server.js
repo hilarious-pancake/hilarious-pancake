@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-var blackBox = function(description, imgUrl){
+var blackBox = function(description, imgUrl, callback){
   //do nlp processing
   //the response data will come in a string
 
@@ -30,6 +30,9 @@ var blackBox = function(description, imgUrl){
         category: classification,
         description: description,
         url: imgUrl
+      })
+      .then(function(newItem){
+        callback(newItem.get('category'));
       });
     });
   });
@@ -64,7 +67,10 @@ app.post('/api/imgurl', function(req, res){
             if(result.body.status === 'skipped'){ //BASED ON THE API: if there is a status skipped then that means there's an error
               console.log('ERROR!')
             }
-            res.send(200, blackBox(result.body.name, req.body.imgurl));
+            // res.send(200, blackBox(result.body.name, req.body.imgurl));
+            blackBox(result.body.name, req.body.imgurl, function(category){
+              res.send(201, category);
+            })
         });
     });
 });

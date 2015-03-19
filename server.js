@@ -4,12 +4,13 @@ var bodyParser = require('body-parser');
 // var httpR = Promise.promisifyAll(require('http-request'));
 var natural = require('natural');
 var unirest = require('unirest');
-var db = require('../models');
+var db = require('./db/config');
 
 var app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
 
 var blackBox = function(description, imgUrl){
   //do nlp processing
@@ -21,10 +22,10 @@ var blackBox = function(description, imgUrl){
   //should return the trash, compost, or recycle and then sent back to the client
   var classification;
 
-  natural.BayesClassifier.load('classifier.json', null, function(err, classifier) {
+  natural.BayesClassifier.load('./app/classifier.json', null, function(err, classifier) {
     classification = classifier.classify(description);
 
-    db.sequelize.sync().then(function() {
+    db.sync().then(function() {
       return Item.create({
         category: classification,
         description: description,
@@ -40,7 +41,7 @@ var blackBox = function(description, imgUrl){
 
 app.get('/api/test', function(req, res){
   res.send(200, 'SUCCESS!');
-})
+});
 
 app.post('/api/imgurl', function(req, res){
   console.log('DATA FROM CLIENT: ', req.body);
@@ -66,15 +67,12 @@ app.post('/api/imgurl', function(req, res){
             res.send(200, blackBox(result.body.name, req.body.imgurl));
         });
     });
-})
+});
 
 // TODO:
 // - Send the classification to the client
 
-db.sequelize.sync().then(function() {
-  app.listen(process.env.port || 8080);
-});
-
+app.listen(process.env.PORT || 8080);
 
 ///////////
 // NOTES //

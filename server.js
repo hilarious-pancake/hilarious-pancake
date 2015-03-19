@@ -20,8 +20,8 @@ var blackBox = function(description, imgUrl, callback){
     classification = classifier.classify(description.name);
     console.log('INSIDE BLACKBOX: ', classification);
 
-    db.sync().then(function() {
-      return Item.create({
+    db.db.sync().then(function() {
+      return db.Item.create({
         category: classification,
         description: description.name,
         url: imgUrl

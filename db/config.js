@@ -1,34 +1,15 @@
-// ////////
-// // PG //
-// ////////
-
-// var pg = require('pg');
-
-// pg.connect(process.env.DATABASE_URL, function(err, client){
-
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///////////////
 // SEQUELIZE //
 ///////////////
 
 var Sequelize = require('sequelize');
 
-var sequelize = new Sequelize('sifter', 'root', '', {
-  host: process.env.DATABASE_URL,
+var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+var sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
+  protocol: 'postgres',
+  port: match[4],
+  host: match[3],
 
   pool: {
     max: 5,
@@ -49,8 +30,7 @@ var Item = sequelize.define('item', {
   date: {
     type: Sequelize.DATE,
     defaultValue: Sequelize.NOW
-  },
-  timestamps: true
+  }
 });
 
 sequelize.sync();

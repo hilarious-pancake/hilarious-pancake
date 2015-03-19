@@ -72,7 +72,7 @@ app.post('/api/imgurl', function(req, res){
 // TODO:
 // - Send the classification to the client
 
-app.listen(process.env.port || 8080);
+app.listen(process.env.PORT || 8080);
 
 ///////////
 // NOTES //

@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-ar blackBox = function(description, imgUrl, callback){
+var blackBox = function(description, imgUrl, callback){
   var classification;
 
   natural.BayesClassifier.load('./app/classifier.json', null, function(err, classifier) {
@@ -39,7 +39,7 @@ ar blackBox = function(description, imgUrl, callback){
 
 var getReq = function(token, imgurl, callback){
   unirest.get("https://camfind.p.mashape.com/image_responses/" + token)
-    .header("X-Mashape-Key", "EPlpijnycCmshxK3kiQgglPopllsp1WWLaijsntHB14joITe8x")
+    .header("X-Mashape-Key", process.env.CAMFIND_KEY)
     .header("Accept", "application/json")
     .end(function (result) {
       if(result.body.status === 'completed'){

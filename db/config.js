@@ -33,4 +33,5 @@ var Item = sequelize.define('item', {
   }
 });
 
-sequelize.sync();
+exports.db = sequelize;
+exports.Item = Item;

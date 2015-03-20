@@ -12,24 +12,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-var blackBox = function(description, imgUrl){
-  //do nlp processing
-  //the response data will come in a string
-
-  //should add to the classifier training document
-    //insert into the schema table
-
-  //should return the trash, compost, or recycle and then sent back to the client
+var blackBox = function(description, imgUrl, callback){
   var classification;
 
   natural.BayesClassifier.load('./app/classifier.json', null, function(err, classifier) {
-    classification = classifier.classify(description);
+    console.log('ABOVE: ', description);
+    classification = classifier.classify(description.name);
+    console.log('INSIDE BLACKBOX: ', classification);
 
-    db.sync().then(function() {
-      return Item.create({
+    db.db.sync().then(function() {
+      return db.Item.create({
         category: classification,
-        description: description,
+        description: description.name,
         url: imgUrl
+      })
+      .then(function(newItem){
+        callback(newItem.get('category'));
       });
     });
   });
@@ -38,6 +36,23 @@ var blackBox = function(description, imgUrl){
 /////////////
 // UNIREST //
 /////////////
+
+var getReq = function(token, imgurl, callback){
+  unirest.get("https://camfind.p.mashape.com/image_responses/" + token)
+    .header("X-Mashape-Key", process.env.CAMFIND_KEY)
+    .header("Accept", "application/json")
+    .end(function (result) {
+      if(result.body.status === 'completed'){
+        //run blackbox function
+        console.log('THE DESCRIPTION: ', result.body);
+        console.log('RESULTBODYNAME: ', result.body.name, 'REQ.BODY.IMGURL: ', imgurl);
+        callback(result.body, imgurl)
+      } else {
+        console.log('NOT COMPLETED: ', result.body)
+        getReq(token, imgurl, callback);
+      }
+  });
+};
 
 app.get('/api/test', function(req, res){
   res.send(200, 'SUCCESS!');
@@ -56,16 +71,26 @@ app.post('/api/imgurl', function(req, res){
     })
     .end(function (result) { //GET request for the token is passed and a description is returned
       console.log('THE RESULT: ', result.body)
-      unirest.get("https://camfind.p.mashape.com/image_responses/" + result.body.token)
-        .header("X-Mashape-Key", process.env.CAMFIND_KEY)
-        .header("Accept", "application/json")
-        .end(function (result) { //BLACKBOX is called on the resulting description
-          console.log('THE DESCRIPTION: ', result.body);
-            if(result.body.status === 'skipped'){ //BASED ON THE API: if there is a status skipped then that means there's an error
-              console.log('ERROR!')
-            }
-            res.send(200, blackBox(result.body.name, req.body.imgurl));
+
+      getReq(result.body.token, req.body.imgurl, function(resultBody, imgURL){
+        blackBox(resultBody, imgURL, function(description){
+          res.send(200, description);
         });
+      });
+
+      // unirest.get("https://camfind.p.mashape.com/image_responses/" + result.body.token)
+      //   .header("X-Mashape-Key", process.env.CAMFIND_KEY)
+      //   .header("Accept", "application/json")
+      //   .end(function (result) { //BLACKBOX is called on the resulting description
+      //     console.log('THE DESCRIPTION: ', result.body);
+      //       if(result.body.status === 'skipped'){ //BASED ON THE API: if there is a status skipped then that means there's an error
+      //         console.log('ERROR!')
+      //       }
+      //       // res.send(200, blackBox(result.body.name, req.body.imgurl));
+      //       blackBox(result.body.name, req.body.imgurl, function(category){
+      //         res.send(201, category);
+      //       })
+      //   });
     });
 });
 

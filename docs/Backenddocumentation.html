@@ -145,7 +145,7 @@ app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">false</span
 <ol>
 <li>An image url is received from the client</li>
 <li>A POST request sends the image url and the location of the image to CamFind’s API. A token is returned.</li>
-<li>A GET request is made with the token and a description of the image is returned in an object.</li>
+<li>A GET request is made with the token and a classification and description of the item is returned.</li>
 </ol>
 
             </div>
@@ -161,8 +161,8 @@ app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">false</span
     })
     .end(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
       getReq(result.body.token, req.body.imgurl, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(resultBody, imgURL)</span></span>{
-        blackBox(resultBody, imgURL, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(description)</span></span>{
-          res.send(<span class="hljs-number">200</span>, description);
+        blackBox(resultBody, imgURL, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(classification)</span></span>{
+          res.send(<span class="hljs-number">200</span>, {classification: classification, description: resultBody});
         });
       });
     });

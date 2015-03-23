@@ -57,7 +57,7 @@ app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">false</span
 <p>The blackbox function takes three parameters</p>
 <ul>
 <li>The <code>description</code> is passed into the the <code>natural.BayesClassifier</code> function to return Trash, Compost, or Recycling. The <code>description</code> is also stored into the database.</li>
-<li>The <code>imgUrl</code> URL is stored into the database.</li>
+<li>The <code>imgUrl</code> is stored into the database.</li>
 <li>The <code>callback</code> will need to take a function to handle processing the return back to the client</li>
 </ul>
 
@@ -110,11 +110,11 @@ app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">false</span
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <h2 id="token-request-function">TOKEN REQUEST FUNCTION</h2>
-<p>CamFind’s API can take up to 20 seconds to return a description after submitting a token, because of this delay we keep pulling for a completed status so that a description can be returned.</p>
+<p>CamFind’s API can take up to 20 seconds or more to return a description after submitting a token. Because of this delay, we keep pulling for a completed status so that a description can be returned.</p>
 <ul>
-<li><code>token</code> is a unique identifier for the image that you’ve submitted, it needs to be added to the get request’s endpoint, so that a description can be returned.</li>
-<li><code>imgurl</code> The image url is passed because it needs to exist for the <code>blackBox</code>.</li>
-<li><code>callback</code> Will need to take a function to handle passing the <code>result.body</code> and <code>imgurl</code> into the <code>blackBox</code>.</li>
+<li><code>token</code> is a unique identifier for the image that you’ve submitted. It needs to be added to the get request’s endpoint, so that a description can be returned.</li>
+<li><code>imgurl</code> is passed because it needs to exist for the <code>blackBox</code> and used later.</li>
+<li>The <code>callback</code> will need to take a function to handle passing the <code>result.body</code> and <code>imgurl</code> into the <code>blackBox</code>.</li>
 </ul>
 
             </div>
@@ -143,9 +143,9 @@ app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">false</span
               </div>
               <h2 id="process-client-side-image-url">PROCESS CLIENT SIDE IMAGE URL</h2>
 <ol>
-<li>An image url is received from the client</li>
-<li>A POST request sends the image url and the location of the image to CamFind’s API. A token is returned.</li>
-<li>A GET request is made with the token and a description of the image is returned in an object.</li>
+<li>An object containing image url and locale is received from the client.</li>
+<li>A POST request sends the image url and the location of the image to CamFind’s API. A <code>token</code> is returned.</li>
+<li>A GET request is made with the <code>token</code> and an object is returned with a classification and description.</li>
 </ol>
 
             </div>
@@ -161,8 +161,8 @@ app.use(bodyParser.urlencoded({ extended: <span class="hljs-literal">false</span
     })
     .end(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(result)</span> </span>{
       getReq(result.body.token, req.body.imgurl, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(resultBody, imgURL)</span></span>{
-        blackBox(resultBody, imgURL, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(description)</span></span>{
-          res.send(<span class="hljs-number">200</span>, description);
+        blackBox(resultBody, imgURL, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(classification)</span></span>{
+          res.send(<span class="hljs-number">200</span>, {classification: classification, description: resultBody});
         });
       });
     });

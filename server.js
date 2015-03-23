@@ -58,8 +58,8 @@ app.post('/api/imgurl', function(req, res){
     .end(function (result) {
 
       getReq(result.body.token, req.body.imgurl, function(resultBody, imgURL){
-        blackBox(resultBody, imgURL, function(description){
-          res.send(200, description);
+        blackBox(resultBody, imgURL, function(classification){
+          res.send(200, {classification: classification, description: resultBody});
         });
       });
     });

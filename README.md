@@ -6,4 +6,7 @@
 2. Receive your classificiation.
 3. Put your trash in the correct bin!
 
-The Team:
+##The Team
++ Conor Flannigan - AngularJS/Ionic Engineer
++ Stephanie Higa - Python/NLP Engineer
++ Jason Ly - Node.js/Express.js Engineer
